@@ -15,25 +15,24 @@ export class GameSaving {
 }
 
 export default class GameSavingLoader {
-  static load() {
-    let result = read()
-      .then(buffer => json(buffer))
-      .then(jsonString => {
-        const parseData = JSON.parse(jsonString);
-        return new GameSaving({
-          id: parseData.id,
-          created: parseData.created,
-          userInfo: {
-            id: parseData.userInfo.id,
-            name: parseData.userInfo.name,
-            level: parseData.userInfo.level,
-            points: parseData.userInfo.points
-          }
-        });
-      })
-      .catch(err => {
-        throw new Error('ошибка: ' + err);
+  static async load() {
+    try {
+      const buffer = await read();
+      const jsonString = await json(buffer);
+      const parseData = JSON.parse(jsonString);
+
+      return new GameSaving({
+        id: parseData.id,
+        created: parseData.created,
+        userInfo: {
+          id: parseData.userInfo.id,
+          name: parseData.userInfo.name,
+          level: parseData.userInfo.level,
+          points: parseData.userInfo.points
+        }
       });
-    return result;
+    } catch (error) {
+      throw new Error('ошибка:', error);
+    }
   }
 }
